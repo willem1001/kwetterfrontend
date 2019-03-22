@@ -1,6 +1,7 @@
 import {Routes} from "@angular/router";
 import {HomePage} from "./pages/home/home.page";
-import {RegisterPage} from "./pages/Register/register.page";
+import {RegisterPage} from "./pages/register/register.page";
+import {LoginPage} from "./pages/login/login.page";
 
 export const routes: Routes = [
   {
@@ -12,11 +13,15 @@ export const routes: Routes = [
     component: RegisterPage
   },
   {
+    path: 'login',
+    component: LoginPage
+  },
+  {
     path: '*',
-    redirectTo: '/home'
+    redirectTo: '/login'
   },
   {
     path: '**',
-    redirectTo: '/home'
+    redirectTo: '/login'
   }
 ];

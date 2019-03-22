@@ -1,0 +1,19 @@
+<form [formGroup]="addLoginForm">
+  <table>
+    <tbody>
+    <tr>
+      <td><label for="input-userName">Name:</label></td>
+      <td><input id="input-userName" formControlName="userName"></td>
+    </tr>
+    <tr>
+      <td><label for="input-password">Password:</label></td>
+      <td><input id="input-password" formControlName="password"></td>
+    </tr>
+    <tr>
+      <td>
+        <button (click)="login()">Log in</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</form>
