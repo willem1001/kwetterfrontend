@@ -17,7 +17,7 @@ import {LoginPage} from "./pages/login/login.page";
     AppComponent,
     HomePage,
     RegisterPage,
-    LoginPage
+    LoginPage,
   ],
   imports: [
     BrowserModule,

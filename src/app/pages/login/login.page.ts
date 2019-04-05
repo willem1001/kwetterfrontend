@@ -1,7 +1,8 @@
 import {Router} from "@angular/router";
 import {HttpClient} from "@angular/common/http";
 import {FormControl, FormGroup} from "@angular/forms";
-import {Component} from "@angular/core";
+import {Component, Pipe} from "@angular/core";
+import  * as crypto from "crypto-js"
 
 
 export var loggedUser;
@@ -11,7 +12,6 @@ export var loggedUser;
 })
 
 export class LoginPage {
-
   addLoginForm: FormGroup;
 
   constructor(
@@ -26,6 +26,15 @@ export class LoginPage {
   }
 
   login() {
-    this.http.post('http://localhost:8080/oioi_war/api/user/login', this.addLoginForm.value).subscribe(user => loggedUser = user);
+
+    let formValue = this.addLoginForm.value;
+    let hash = crypto.SHA512(formValue.password);
+    formValue.password = hash.toString();
+
+    this.http.post('http://localhost:8080/oioi_war/api/user/login', formValue).subscribe( response => {
+      loggedUser = response;
+      localStorage.setItem("user", JSON.stringify(response));
+      this.router.navigateByUrl("/home");
+    });
   }
 }

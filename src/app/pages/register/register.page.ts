@@ -2,6 +2,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {Component} from "@angular/core";
+import  * as crypto from "crypto-js"
 
 @Component({
   templateUrl: 'register.page.html'
@@ -24,8 +25,12 @@ export class RegisterPage {
   }
 
   addUser() {
-    this.http.post('http://localhost:8080/oioi_war/api/user/create', this.addRegisterForm.value).subscribe();
-    this.router.navigateByUrl('/home');
 
+    let formValue = this.addRegisterForm.value;
+    let hash = crypto.SHA512(formValue.password);
+    formValue.password = hash.toString();
+
+    this.http.post('http://localhost:8080/oioi_war/api/user/create', formValue).subscribe();
+    this.router.navigateByUrl('/login');
   }
 }
