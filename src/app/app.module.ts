@@ -8,9 +8,12 @@ import { HomePage } from './pages/home/home.page';
 import {ReactiveFormsModule} from '@angular/forms';
 import {RouterModule} from '@angular/router';
 import {routes} from './app.routes';
-import { HttpClientModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {RegisterPage} from './pages/register/register.page';
 import {LoginPage} from "./pages/login/login.page";
+import {AddHeaderInterceptor} from "./logic/interceptor";
+import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
+import {FormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -24,9 +27,15 @@ import {LoginPage} from "./pages/login/login.page";
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    NgbModule,
+    FormsModule,
     RouterModule.forRoot(routes)
   ],
-  providers: [],
+  providers: [{
+    provide: HTTP_INTERCEPTORS,
+    useClass: AddHeaderInterceptor,
+    multi: true,
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
