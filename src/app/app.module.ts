@@ -14,6 +14,7 @@ import {LoginPage} from "./pages/login/login.page";
 import {AddHeaderInterceptor} from "./logic/interceptor";
 import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {FormsModule} from "@angular/forms";
+import {UserPage} from "./pages/user/user.page";
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import {FormsModule} from "@angular/forms";
     HomePage,
     RegisterPage,
     LoginPage,
+    UserPage
   ],
   imports: [
     BrowserModule,

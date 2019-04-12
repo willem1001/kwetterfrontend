@@ -1,6 +1,4 @@
 <form [formGroup]="addHomePageForm">
-
-  <H1>Home</H1>
   <body>
   <button (click)="logOut()">log out</button>
   <table>
@@ -13,42 +11,31 @@
       </td>
     </tr>
     </tbody>
-    <!--<tbody *ngFor="let post of timeline">-->
-    <!--<tr>-->
-      <!--<td> {{post["content"]}}</td>-->
-      <!--<td>{{post["postCreator"]}}</td>-->
-      <!--<td> <button *ngIf="post['id'] !== selectedPostId" (click)="createComment(post);">comment </button></td>-->
-      <!--<td> <button *ngIf="post['id'] === selectedPostId" (click)="postComment(post);">post </button></td>-->
-      <!--<td><input *ngIf="post['id'] === selectedPostId" id="input-commentContent" formControlName="commentContent"/></td>-->
-    <!--</tr>-->
-    <!--</tbody>-->
   </table>
-  <ngb-accordion *ngFor="let post of timeline" activeIds="custom-panel-1">
-    <ngb-panel id="custom-panel-1">
-      <ng-template ngbPanelHeader let-opened="opened">
-        <div class="d-flex align-items-center justify-content-between">
-          <h5 class="m-0">{{post['content']}}</h5>
-          <button ngbPanelToggle class="btn btn-link p-0">Comments</button>
-        </div>
-      </ng-template>
-      <ng-template ngbPanelContent>
-        <table class="table table-striped">
-          <tbody *ngFor="let post of timeline">
-          <tr>
-            <td> {{post["content"]}}</td>
-            <td>{{post["postCreator"]}}</td>
-          </tr>
-          </tbody>
-        </table>
-        <button (click)="postComment(post)">place comment</button>
-        <input formControlName="commentContent"/>
-      </ng-template>
-    </ngb-panel>
-  </ngb-accordion>
-
-
-
-
+  <div style="margin: 10px">
+    <ngb-accordion [closeOthers]="true" [activeIds]="activeId">
+      <ngb-panel *ngFor="let post of timeline; let id = index" id="{{id}}">
+        <ng-template ngbPanelHeader>
+          <div class="d-flex align-items-center justify-content-between">
+            <h5 class="display-3">{{post['tweetContent']}}</h5>
+            <button [ngbPanelToggle] (click)="openAccordion(id)" class="btn btn-link">Comments</button>
+          </div>
+        </ng-template>
+        <ng-template ngbPanelContent>
+          <div *ngFor="let comment of post['comments']" class="card">
+            <div class="card-header">
+              <h4 (click)="openUserPage(comment['commentCreator']['creatorId'])">  {{comment['commentCreator']['creatorName']}}</h4>
+            </div>
+            <div class="card-body">
+              <p class="card-text display-4">{{comment['commentContent']}}</p>
+            </div>
+          </div>
+          <button (click)="postComment(post)">place comment</button>
+          <input formControlName="commentContent"/>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+  </div>
   </body>
 </form>
 

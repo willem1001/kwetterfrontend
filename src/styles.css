@@ -1,2 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~bootstrap/dist/css/bootstrap.css";
+
+h4 {
+  cursor:pointer;
+  color:blue;
+  text-decoration:underline;
+}
+
+ngb-accordion {
+  padding-left: 100px;
+}

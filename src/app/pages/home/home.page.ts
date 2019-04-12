@@ -7,10 +7,12 @@ import {FormControl, FormGroup} from "@angular/forms";
   templateUrl: 'home.page.html'
 })
 
+
 export class HomePage {
   user;
-  timeline;
   addHomePageForm: FormGroup;
+  timeline;
+  activeId = [];
 
   constructor(
     private router: Router,
@@ -39,8 +41,12 @@ export class HomePage {
 
   getTimeLine() {
     this.http.get('http://localhost:8080/oioi_war/api/post/getTimeLine/' + this.user["id"]).subscribe(response => {
-      this.timeline = response;
-    })
+      const timelineArray = [];
+      Object.values(response).forEach(function (post) {
+        timelineArray.push(JSON.parse(post));
+      });
+      this.timeline = timelineArray;
+    });
   }
 
   createTweet() {
@@ -49,7 +55,7 @@ export class HomePage {
     this.http.post('http://localhost:8080/oioi_war/api/post/createTweet', {
       "content": content,
       "id": id
-    }).subscribe(response => {
+    }).subscribe(() => {
       this.getTimeLine();
     })
   }
@@ -58,12 +64,23 @@ export class HomePage {
     let content = this.addHomePageForm.get("commentContent").value;
     let id = this.user["id"];
     this.http.post('http://localhost:8080/oioi_war/api/post/createComment', {
-      "parentId": post["id"],
+      "parentId": post["tweetId"],
       "id": id,
       "content": content
-    }).subscribe(response => {
+    }).subscribe(() => {
       this.getTimeLine();
-      alert(response["postType"]);
     })
+  }
+
+  openAccordion(id) {
+    if(this.activeId[0] === id){
+      this.activeId = [];
+    } else {
+      this.activeId[0] = id;
+    }
+  }
+
+  openUserPage(id) {
+    this.router.navigate(['/user'], {queryParams:{"id": id}});
   }
 }

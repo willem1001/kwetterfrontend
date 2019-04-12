@@ -25,7 +25,6 @@ export class RegisterPage {
   }
 
   addUser() {
-
     let formValue = this.addRegisterForm.value;
     let hash = crypto.SHA512(formValue.password);
     formValue.password = hash.toString();
