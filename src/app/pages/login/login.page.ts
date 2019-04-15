@@ -3,9 +3,7 @@ import {HttpClient} from "@angular/common/http";
 import {FormControl, FormGroup} from "@angular/forms";
 import {Component} from "@angular/core";
 import * as crypto from "crypto-js"
-
-
-export var loggedUser;
+import {AppComponent} from "../../app.component";
 
 @Component({
   templateUrl: 'login.page.html'
@@ -16,6 +14,7 @@ export class LoginPage {
 
   constructor(
     private router: Router,
+    private app: AppComponent,
     private http: HttpClient) {
 
     this.addLoginForm = new FormGroup({
@@ -30,9 +29,10 @@ export class LoginPage {
     values.password = hash.toString();
 
     this.http.post('http://localhost:8080/oioi_war/api/user/login', values).subscribe(response => {
-      loggedUser = response;
+      this.app.setUser(response);
       localStorage.setItem("user", JSON.stringify(response));
       this.router.navigateByUrl("/home");
     });
   }
+
 }

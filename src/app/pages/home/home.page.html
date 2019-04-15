@@ -1,41 +1,137 @@
+<body>
 <form [formGroup]="addHomePageForm">
-  <body>
-  <button (click)="logOut()">log out</button>
-  <table>
-    <tbody>
-    <tr>
-      <td><label for="input-tweetContent">Content:</label></td>
-      <td><input id="input-tweetContent" formControlName="tweetContent"></td>
-      <td>
-        <button (click)="createTweet()">create tweet</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-  <div style="margin: 10px">
-    <ngb-accordion [closeOthers]="true" [activeIds]="activeId">
-      <ngb-panel *ngFor="let post of timeline; let id = index" id="{{id}}">
-        <ng-template ngbPanelHeader>
-          <div class="d-flex align-items-center justify-content-between">
-            <h5 class="display-3">{{post['tweetContent']}}</h5>
-            <button [ngbPanelToggle] (click)="openAccordion(id)" class="btn btn-link">Comments</button>
-          </div>
-        </ng-template>
-        <ng-template ngbPanelContent>
-          <div *ngFor="let comment of post['comments']" class="card">
-            <div class="card-header">
-              <h4 (click)="openUserPage(comment['commentCreator']['creatorId'])">  {{comment['commentCreator']['creatorName']}}</h4>
+  <div>
+    <div style="float:left; width: 22%; margin-left: 10px">
+      <table class="table table-striped border">
+        <tbody>
+        <tr>
+          <td>
+            <div class="form-group">
+              <label for="input-tweetContent">Create tweet</label>
+              <textarea style="resize: none" type="text" class="form-control" id="input-tweetContent"
+                        formControlName="tweetContent"
+                        placeholder="Tweet"></textarea>
             </div>
-            <div class="card-body">
-              <p class="card-text display-4">{{comment['commentContent']}}</p>
+            <button class="btn btn-primary" (click)="createTweet()">Create</button>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="form-group">
+              <label for="input-searchUser">Password</label>
+              <input type="text" class="form-control" id="input-searchUser" formControlName="searchUser"
+                     placeholder="Search for user">
             </div>
-          </div>
-          <button (click)="postComment(post)">place comment</button>
-          <input formControlName="commentContent"/>
-        </ng-template>
-      </ngb-panel>
-    </ngb-accordion>
+            <button class="btn btn-primary" (click)="searchUsers()">Search</button>
+          </td>
+        </tr>
+        <tr *ngIf="user['userName']">
+          <td>
+            <label>User</label> <br>
+            <div>{{user['userName']}} </div>
+            <br>
+          </td>
+        </tr>
+        <tr *ngIf="user['bio']">
+          <td>
+            <label>Bio</label>
+            <div>{{user['bio']}}</div>
+          </td>
+        </tr>
+        <tr *ngIf="user['website']">
+          <td>
+            <label>Website</label>
+            <div class="linked" (click)="gotoWebsite()">{{user['website']}}</div>
+          </td>
+        </tr>
+        <tr *ngIf="following.length > 0">
+          <td>
+            <label>Following</label>
+            <div *ngFor="let followingUser of following" (click)="openUserPage(followingUser['id'])"
+                 class="linked">{{followingUser['userName']}}
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="followers.length > 0">
+          <td>
+            <label>Followers</label>
+            <div *ngFor="let followerUser of followers" (click)="openUserPage(followerUser['id'])"
+                 class="linked">{{followerUser['userName']}}
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-right: 10px; float: right; width: 73%;">
+      <div *ngIf="!isSearching">
+        <ngb-accordion [closeOthers]="true" [activeIds]="activeId">
+          <ngb-panel *ngFor="let post of timeline; let id = index" id="{{id}}">
+            <ng-template ngbPanelHeader>
+              <div class="card-header d-flex align-items-center justify-content-between">
+                <h4 class="linked"
+                    (click)="openUserPage(post['tweetCreator']['creatorId'])">{{post['tweetCreator']['creatorName']}}</h4>
+                <br>
+                <button [ngbPanelToggle] (click)="openAccordion(id)" class="btn btn-link">Comments</button>
+              </div>
+              <div class="card-body">
+                <h5 class="display-3">{{post['tweetContent']}}</h5>
+              </div>
+            </ng-template>
+            <ng-template ngbPanelContent>
+              <div *ngFor="let comment of post['comments']" class="card">
+                <div class="card-header">
+                  <h4 class="linked"
+                      (click)="openUserPage(comment['commentCreator']['creatorId'])">{{comment['commentCreator']['creatorName']}}</h4>
+                </div>
+                <div class="card-body">
+                  <p class="card-text display-4">{{comment['commentContent']}}</p>
+                </div>
+              </div>
+              <div style="margin-top: 10px" class="input-group">
+                <button style="margin-right: 3px" class="btn btn-primary"
+                        [disabled]="!addHomePageForm.get('commentContent').value" (click)="postComment(post)">place
+                  comment
+                </button>
+                <input class="form-control" formControlName="commentContent"/>
+              </div>
+            </ng-template>
+          </ngb-panel>
+        </ngb-accordion>
+      </div>
+
+      <div *ngIf="isSearching">
+        <div>
+          <button style="margin-bottom: 10px" class="btn btn-primary" (click)="returnFromUserSearch()">Return</button>
+        </div>
+        <div>
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Bio</th>
+              <th scope="col">Location</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let user of searchResults">
+              <td>
+                <div class="linked" (click)="followUser(user['id'])">{{user['userName']}}</div>
+              </td>
+              <td>
+                {{user['bio']}}
+              </td>
+              <td>
+                {{user['location']}}
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
-  </body>
 </form>
+</body>
 

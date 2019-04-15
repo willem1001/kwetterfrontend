@@ -1,1 +1,7 @@
-{{userId}}
+{{userName}} userBio, userRole, userLocation, userWebsite}}
+{{userBio}}
+{{userRole}}
+{{userLocation}}
+{{userWebsite}}
+
+<button *ngIf="userId !== currentUser['id']" (click)="followUser()">Follow</button>

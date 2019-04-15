@@ -3,16 +3,20 @@ import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {FormControl, FormGroup} from "@angular/forms";
 
-@Component({
-  templateUrl: 'home.page.html'
-})
 
+@Component({
+  templateUrl: 'home.page.html',
+})
 
 export class HomePage {
   user;
   addHomePageForm: FormGroup;
   timeline;
   activeId = [];
+  isSearching = false;
+  searchResults;
+  following = [];
+  followers = [];
 
   constructor(
     private router: Router,
@@ -26,17 +30,10 @@ export class HomePage {
     this.addHomePageForm = new FormGroup({
       tweetContent: new FormControl(),
       commentContent: new FormControl(),
+      searchUser: new FormControl(),
     });
-
     this.getTimeLine();
-  }
-
-  logOut() {
-    this.http.post('http://localhost:8080/oioi_war/api/user/logout', {"id": this.user["id"]}).subscribe(response => {
-      localStorage.removeItem("user");
-      this.router.navigateByUrl("/login");
-    });
-
+    this.getFollow();
   }
 
   getTimeLine() {
@@ -46,6 +43,25 @@ export class HomePage {
         timelineArray.push(JSON.parse(post));
       });
       this.timeline = timelineArray;
+    });
+  }
+
+  getFollow() {
+    this.http.get('http://localhost:8080/oioi_war/api/user/getAllFollowers/' + this.user["id"]).subscribe(response =>{
+      const followerArray = [];
+      Object.values(response).forEach(function (following) {
+        followerArray.push(following);
+      });
+      this.followers = followerArray;
+    });
+
+
+    this.http.get('http://localhost:8080/oioi_war/api/user/getAllFollowing/' + this.user["id"]).subscribe(response =>{
+      const followingArray = [];
+      Object.values(response).forEach(function (following) {
+        followingArray.push(following);
+      });
+      this.following = followingArray;
     });
   }
 
@@ -73,7 +89,7 @@ export class HomePage {
   }
 
   openAccordion(id) {
-    if(this.activeId[0] === id){
+    if (this.activeId[0] === id) {
       this.activeId = [];
     } else {
       this.activeId[0] = id;
@@ -81,6 +97,36 @@ export class HomePage {
   }
 
   openUserPage(id) {
-    this.router.navigate(['/user'], {queryParams:{"id": id}});
+    if (this.user['id'] != id) {
+      this.router.navigate(['/user'], {queryParams: {"id": id}});
+    } else {
+      this.router.navigateByUrl("/home");
+    }
+  }
+
+  searchUsers() {
+    const query = this.addHomePageForm.get("searchUser").value;
+    this.http.get('http://localhost:8080/oioi_war/api/user/searchUsers/' + query).subscribe(response => {
+      this.searchResults = response;
+      this.isSearching = true;
+    });
+  }
+
+  returnFromUserSearch() {
+    this.isSearching = false;
+    this.searchResults = undefined;
+  }
+
+  gotoWebsite() {
+    window.location.href = this.user['website'];
+  }
+
+  followUser(id) {
+    this.http.post("http://localhost:8080/oioi_war/api/user/follow", {
+      "followingId": id,
+      "followerId": this.user['id']
+    }).subscribe(() => {
+      this.getFollow()
+    })
   }
 }

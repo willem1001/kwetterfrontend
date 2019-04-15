@@ -2,7 +2,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {Component} from "@angular/core";
-import  * as crypto from "crypto-js"
+import * as crypto from "crypto-js"
 
 @Component({
   templateUrl: 'register.page.html'
@@ -10,6 +10,7 @@ import  * as crypto from "crypto-js"
 
 export class RegisterPage {
   addRegisterForm: FormGroup;
+  userName;
 
   constructor(
     private router: Router,
