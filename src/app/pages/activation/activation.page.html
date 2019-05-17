@@ -1,0 +1,7 @@
+<form [formGroup]="addActivationForm"></form>
+<div *ngIf="isActivated">
+  Thank you for activating, you can now use your account.
+</div>
+<div
+  *ngIf="!isActivated">Something went wrong.
+</div>

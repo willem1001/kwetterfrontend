@@ -18,6 +18,7 @@ export class RegisterPage {
     this.addRegisterForm = new FormGroup({
       userName: new FormControl(),
       password: new FormControl(),
+      mailAddress: new FormControl(),
       bio: new FormControl(),
       location: new FormControl(),
       website: new FormControl(),

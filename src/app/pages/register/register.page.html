@@ -9,6 +9,10 @@
       <label for="input-password">Password</label>
       <input type="password" class="form-control" id="input-password" formControlName="password" placeholder="Password">
     </div>
+  <div class="form-group">
+    <label for="input-email">Email</label>
+    <input type="email" class="form-control" id="input-email" formControlName="mailAddress" placeholder="Email">
+  </div>
     <div class="form-group">
       <label for="input-bio">Bio</label>
       <input maxlength="200" class="form-control" id="input-bio" formControlName="bio" placeholder="Bio">
@@ -21,5 +25,5 @@
       <label for="input-website">Website</label>
       <input class="form-control" id="input-website" formControlName="website" placeholder="Website">
     </div>
-    <button [disabled]="!addRegisterForm.get('password').value || !addRegisterForm.get('userName').value" (click)="addUser()" class="btn btn-primary">Register</button>
+    <button [disabled]="!addRegisterForm.get('password').value || !addRegisterForm.get('userName').value || !addRegisterForm.get('mailAddress').value" (click)="addUser()" class="btn btn-primary">Register</button>
   </form>

@@ -2,6 +2,8 @@ import {Component} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {FormControl, FormGroup} from "@angular/forms";
+import {SocketWrap} from "../../logic/socketwrap";
+import {send} from "q";
 
 
 @Component({
@@ -9,6 +11,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 })
 
 export class HomePage {
+  socket;
   user;
   addHomePageForm: FormGroup;
   timeline;
@@ -20,6 +23,7 @@ export class HomePage {
 
   constructor(
     private router: Router,
+    private socketWrap: SocketWrap,
     private http: HttpClient) {
 
     this.user = JSON.parse(localStorage.getItem("user"));
@@ -34,6 +38,14 @@ export class HomePage {
     });
     this.getTimeLine();
     this.getFollow();
+
+    this.socket = this.socketWrap.open('ws://localhost:3001/tweets');
+    this.socket.states.subscribe(state => {
+    });
+    this.socket.tweets.subscribe(tweet => {
+      console.log(tweet);
+      this.getTimeLine()
+    });
   }
 
   getTimeLine() {
@@ -47,18 +59,18 @@ export class HomePage {
   }
 
   getFollow() {
-    this.http.get('http://localhost:8080/oioi_war/api/user/getAllFollowers/' + this.user["id"]).subscribe(response =>{
+    this.http.get('http://localhost:8080/oioi_war/api/user/getAllFollowers/' + this.user["id"]).subscribe(followerResponse => {
       const followerArray = [];
-      Object.values(response).forEach(function (following) {
+      Object.values(followerResponse).forEach(function (following) {
         followerArray.push(following);
       });
       this.followers = followerArray;
     });
 
 
-    this.http.get('http://localhost:8080/oioi_war/api/user/getAllFollowing/' + this.user["id"]).subscribe(response =>{
+    this.http.get('http://localhost:8080/oioi_war/api/user/getAllFollowing/' + this.user["id"]).subscribe(followingResponse => {
       const followingArray = [];
-      Object.values(response).forEach(function (following) {
+      Object.values(followingResponse).forEach(function (following) {
         followingArray.push(following);
       });
       this.following = followingArray;
@@ -72,7 +84,7 @@ export class HomePage {
       "content": content,
       "id": id
     }).subscribe(() => {
-      this.getTimeLine();
+      this.socket.send('newTweet');
     })
   }
 
@@ -84,7 +96,7 @@ export class HomePage {
       "id": id,
       "content": content
     }).subscribe(() => {
-      this.getTimeLine();
+      this.socket.send('newComment');
     })
   }
 

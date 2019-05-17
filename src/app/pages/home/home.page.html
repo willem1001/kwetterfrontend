@@ -66,7 +66,7 @@
 
     <div style="margin-right: 10px; float: right; width: 73%;">
       <div *ngIf="!isSearching">
-        <ngb-accordion [closeOthers]="true" [activeIds]="activeId">
+        <ngb-accordion *ngIf="timeline" [closeOthers]="true" [activeIds]="activeId">
           <ngb-panel *ngFor="let post of timeline; let id = index" id="{{id}}">
             <ng-template ngbPanelHeader>
               <div class="card-header d-flex align-items-center justify-content-between">
@@ -103,7 +103,7 @@
 
       <div *ngIf="isSearching">
         <div>
-          <button style="margin-bottom: 10px" class="btn btn-primary" (click)="returnFromUserSearch()">Return</button>
+          <button style="margin-bottom: 10px" class="btn btn-primary" (click)="returnFromUserSearch(); getTimeLine()">Return</button>
         </div>
         <div>
           <table class="table table-striped">

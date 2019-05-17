@@ -1,19 +1,13 @@
 <form [formGroup]="addLoginForm">
-  <table>
-    <tbody>
-    <tr>
-      <td><label for="input-userName">Name:</label></td>
-      <td><input id="input-userName" formControlName="userName"></td>
-    </tr>
-    <tr>
-      <td><label for="input-password">Password:</label></td>
-      <td><input id="input-password" formControlName="password"></td>
-    </tr>
-    <tr>
-      <td>
-        <button (click)="login()">Log in</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <div style="margin-left: 10px; width: 30%">
+  <div class="form-group">
+    <label for="input-userName">User name</label>
+    <input type="text" class="form-control" id="input-userName" formControlName="userName" placeholder="user name">
+  </div>
+  <div class="form-group">
+    <label for="input-password">Password</label>
+    <input type="password" class="form-control" id="input-password" formControlName="password" placeholder="Password">
+  </div>
+  </div>
+  <button style="margin-left: 10px" class="btn btn-primary" (click)="login()">Login</button>
 </form>

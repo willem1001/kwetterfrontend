@@ -17,16 +17,23 @@ export class AppComponent {
     private router: Router,
     private http: HttpClient,
   ) {
+    if(localStorage.getItem("user")) {
+      this.user = JSON.parse(localStorage.getItem("user"));
+    } else {
+      this.user = undefined;
+    }
     this.addAppComponent = new FormGroup({
       search : new FormControl(),
     })
   }
   logOut() {
-    this.http.post('http://localhost:8080/oioi_war/api/user/logout', {"id": this.user["id"]}).subscribe(() => {
-      this.user = undefined;
-      localStorage.removeItem("user");
+
+    const id = this.user["id"];
+    this.http.post('http://localhost:8080/oioi_war/api/user/logout', {"id": id}).subscribe(() => {
       this.router.navigateByUrl("/login");
     });
+    this.user = undefined;
+    localStorage.clear();
   }
 
   setUser(user) {

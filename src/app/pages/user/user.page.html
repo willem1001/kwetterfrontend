@@ -1,7 +1,74 @@
-{{userName}} userBio, userRole, userLocation, userWebsite}}
-{{userBio}}
-{{userRole}}
-{{userLocation}}
-{{userWebsite}}
+<body>
+<form *ngIf="user" [formGroup]="addUserPage">
+  <div>
+    <div style="float:left; width: 22%; margin-left: 10px">
+      <table class="table table-striped border">
+        <tbody>
+        <tr *ngIf="user['userName']">
+          <td>
+            <label>User</label> <br>
+            <div>{{user['userName']}} </div>
+            <br>
+          </td>
+        </tr>
+        <tr *ngIf="user['bio']">
+          <td>
+            <label>Bio</label>
+            <div>{{user['bio']}}</div>
+          </td>
+        </tr>
+        <tr *ngIf="user['website']">
+          <td>
+            <label>Website</label>
+            <div class="linked" (click)="gotoWebsite()">{{user['website']}}</div>
+          </td>
+        </tr>
+        <tr *ngIf="following.length > 0">
+          <td>
+            <label>Following</label>
+            <div *ngFor="let followingUser of following" (click)="openUserPage(followingUser['id'])"
+                 class="linked">{{followingUser['userName']}}
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="followers.length > 0">
+          <td>
+            <label>Followers</label>
+            <div *ngFor="let followerUser of followers" (click)="openUserPage(followerUser['id'])"
+                 class="linked">{{followerUser['userName']}}
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
 
-<button *ngIf="userId !== currentUser['id']" (click)="followUser()">Follow</button>
+    <div style="margin-right: 10px; float: right; width: 73%;">
+      <ngb-accordion [closeOthers]="true" [activeIds]="activeId">
+        <ngb-panel *ngFor="let post of timeline; let id = index" id="{{id}}">
+          <ng-template ngbPanelHeader>
+            <div class="card-header d-flex align-items-center justify-content-between">
+              <h4 class="linked"
+                  (click)="openUserPage(post['tweetCreator']['creatorId'])">{{post['tweetCreator']['creatorName']}}</h4>
+              <br>
+              <button [ngbPanelToggle] (click)="openAccordion(id)" class="btn btn-link">Comments</button>
+            </div>
+            <div class="card-body">
+              <h5 class="display-3">{{post['tweetContent']}}</h5>
+            </div>
+          </ng-template>
+          <ng-template ngbPanelContent>
+            <div *ngFor="let comment of post['comments']" class="card">
+              <div class="card-header">
+                <h4 class="linked"
+                    (click)="openUserPage(comment['commentCreator']['creatorId'])">{{comment['commentCreator']['creatorName']}}</h4>
+              </div>
+            </div>
+          </ng-template>
+        </ngb-panel>
+      </ngb-accordion>
+    </div>
+  </div>
+</form>
+</body>
+

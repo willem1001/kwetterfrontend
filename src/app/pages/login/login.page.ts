@@ -21,6 +21,11 @@ export class LoginPage {
       userName: new FormControl(),
       password: new FormControl(),
     });
+
+    if(localStorage.getItem("user")) {
+      const user = JSON.parse(localStorage.getItem("user"));
+      this.repeatLogin(user["userName"], user["password"]);
+    }
   }
 
   login() {
@@ -29,6 +34,14 @@ export class LoginPage {
     values.password = hash.toString();
 
     this.http.post('http://localhost:8080/oioi_war/api/user/login', values).subscribe(response => {
+      this.app.setUser(response);
+      localStorage.setItem("user", JSON.stringify(response));
+      this.router.navigateByUrl("/home");
+    });
+  }
+
+  repeatLogin(userName, password) {
+    this.http.post('http://localhost:8080/oioi_war/api/user/login', {"userName" : userName, "password" : password}).subscribe(response => {
       this.app.setUser(response);
       localStorage.setItem("user", JSON.stringify(response));
       this.router.navigateByUrl("/home");

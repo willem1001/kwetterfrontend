@@ -3,8 +3,13 @@ import {HomePage} from "./pages/home/home.page";
 import {RegisterPage} from "./pages/register/register.page";
 import {LoginPage} from "./pages/login/login.page";
 import {UserPage} from "./pages/user/user.page";
+import {ActivationPage} from "./pages/activation/activation.page";
 
 export const routes: Routes = [
+  {
+    path: 'activation/:activationToken',
+    component: ActivationPage
+  },
   {
     path: 'home',
     component: HomePage
