@@ -1,16 +1,17 @@
-import {Component} from "@angular/core";
+import {Component, OnInit} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {FormControl, FormGroup} from "@angular/forms";
 import {SocketWrap} from "../../logic/socketwrap";
-import {send} from "q";
-
+import {PushNotificationsService} from "../../logic/notificationservice";
 
 @Component({
   templateUrl: 'home.page.html',
+  selector: 'push-notification',
+  providers: [PushNotificationsService]
 })
 
-export class HomePage {
+export class HomePage implements OnInit{
   socket;
   user;
   addHomePageForm: FormGroup;
@@ -22,6 +23,7 @@ export class HomePage {
   followers = [];
 
   constructor(
+    private notificationService: PushNotificationsService,
     private router: Router,
     private socketWrap: SocketWrap,
     private http: HttpClient) {
@@ -36,8 +38,6 @@ export class HomePage {
       commentContent: new FormControl(),
       searchUser: new FormControl(),
     });
-    this.getTimeLine();
-    this.getFollow();
 
     this.socket = this.socketWrap.open('ws://localhost:3001/tweets');
     this.socket.states.subscribe(state => {
@@ -46,7 +46,15 @@ export class HomePage {
       console.log(tweet);
       this.getTimeLine()
     });
+
+    this.notify();
   }
+
+  ngOnInit(): void {
+    this.getTimeLine();
+    this.getFollow();
+  }
+
 
   getTimeLine() {
     this.http.get('http://localhost:8080/oioi_war/api/post/getTimeLine/' + this.user["id"]).subscribe(response => {
@@ -140,5 +148,13 @@ export class HomePage {
     }).subscribe(() => {
       this.getFollow()
     })
+  }
+  notify() {
+    let data: Array < any >= [];
+    data.push({
+      "title": "Welcome",
+      "alertContent": "Hello " + this.user["userName"]
+    });
+    this.notificationService.generateNotification(data);
   }
 }
