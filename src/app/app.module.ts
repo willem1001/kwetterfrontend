@@ -16,6 +16,9 @@ import {NgbModule} from "@ng-bootstrap/ng-bootstrap";
 import {FormsModule} from "@angular/forms";
 import {UserPage} from "./pages/user/user.page";
 import {SocketWrap} from "./logic/socketwrap";
+import {RecaptchaModule} from "ng-recaptcha";
+import {RecaptchaFormsModule} from "ng-recaptcha/forms";
+
 
 @NgModule({
   declarations: [
@@ -33,6 +36,8 @@ import {SocketWrap} from "./logic/socketwrap";
     ReactiveFormsModule,
     NgbModule,
     FormsModule,
+    RecaptchaModule,
+    RecaptchaFormsModule,
     RouterModule.forRoot(routes)
   ],
   providers: [{

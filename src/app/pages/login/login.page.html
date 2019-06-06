@@ -1,4 +1,5 @@
 <form [formGroup]="addLoginForm">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
   <div style="margin-left: 10px; width: 30%">
   <div class="form-group">
     <label for="input-userName">User name</label>
@@ -8,6 +9,7 @@
     <label for="input-password">Password</label>
     <input type="password" class="form-control" id="input-password" formControlName="password" placeholder="Password">
   </div>
+    <re-captcha (resolved)="resolved($event)" siteKey="6Lc7cKcUAAAAAJ-chJPMlBa8HJ-ZZjjoEguQWidX"></re-captcha>
   </div>
   <button style="margin-left: 10px" class="btn btn-primary" (click)="login()">Login</button>
 </form>

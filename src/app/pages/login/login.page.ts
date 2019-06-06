@@ -4,6 +4,7 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {Component} from "@angular/core";
 import * as crypto from "crypto-js"
 import {AppComponent} from "../../app.component";
+import {resolve} from "q";
 
 @Component({
   templateUrl: 'login.page.html'
@@ -11,6 +12,7 @@ import {AppComponent} from "../../app.component";
 
 export class LoginPage {
   addLoginForm: FormGroup;
+  captcha: String;
 
   constructor(
     private router: Router,
@@ -32,6 +34,7 @@ export class LoginPage {
     let values = this.addLoginForm.value;
     let hash = crypto.SHA512(values.password);
     values.password = hash.toString();
+    values.recaptcha = this.captcha;
 
     this.http.post('http://localhost:8080/oioi_war/api/user/login', values).subscribe(response => {
       this.app.setUser(response);
@@ -48,4 +51,7 @@ export class LoginPage {
     });
   }
 
+  resolved(captchaResponse: string) {
+      this.captcha = captchaResponse;
+  }
 }
